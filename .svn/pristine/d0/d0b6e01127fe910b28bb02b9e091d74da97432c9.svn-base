@@ -1,0 +1,19 @@
+package kr.or.ddit.file.vo;
+
+import java.io.Serializable;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Data
+@EqualsAndHashCode(of = "boardFileId")
+public class FileVO implements Serializable{
+	private Integer boardFileId;
+	private Integer boardId;
+	private Integer fileCategoryId;
+	private String originalFileName;
+	private String saveFileName;
+	private String fileRoute;
+	private String fileCreateDate;
+	private String fileExtension;
+}

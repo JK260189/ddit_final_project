@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.alarm.dao.AlarmDAO">
+
+
+
+
+<insert id="insertAlarm" >
+    INSERT ALL
+    <foreach collection="alarms" item="item" >
+        <if test="item.projectId > 0">
+            into ALARM (PROJECT_ID, ALARM_CONTENT, ALARM_SENDER)
+            values (#{item.projectId}, #{item.alarmContent}, #{item.alarmSender})
+        </if>
+        <if test="item.projectIssueId > 0">
+            into ALARM (PROJECT_ISSUE_ID, ALARM_CONTENT, ALARM_SENDER)
+            values (#{item.projectIssueId}, #{item.alarmContent}, #{item.alarmSender})
+        </if>
+    </foreach>
+    SELECT * FROM DUAL
+</insert>
+</mapper>

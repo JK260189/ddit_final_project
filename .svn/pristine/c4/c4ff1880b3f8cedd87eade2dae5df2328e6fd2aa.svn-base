@@ -1,0 +1,93 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+    
+<div class="row align-items-center">
+    <div class="border-0 mb-4">
+        <div class="card-header p-0 no-bg bg-transparent d-flex align-items-center px-0 border-bottom flex-wrap">
+            <h3 class="fw-bold py-3 mb-0">NO.777  </h3>
+        </div>
+        <div  class="card " >
+        	<div class="card-body">
+        		<table class="table-bordered" border="1" style="width: 100%; text-align: center; ">
+            	<thead>
+            		<tr>
+            			<th colspan="4"><h5>정재환 사람만들기 프로젝트</h5></th>
+            		</tr>
+            		<tr>
+            			<th>인원</th>
+            				<td> 3명</td>
+            				<th>기간</th>
+            				<td> ~~~</td>
+            		</tr>
+            	</thead>
+            
+            </table>
+            
+        	</div>
+        </div>
+         
+    </div>
+</div>   
+ <div class="row g-3 mb-3 row-deck">
+    <div class="col-md-12 col-lg-4 col-xl-4 col-xxl-4">
+        <div class="card ">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="avatar lg  rounded-1 no-thumbnail bg-lightyellow color-defult"><i class="bi bi-journal-check fs-4"></i></div>
+                    <div class="flex-fill ms-4">
+                        <div class="">전체 일감</div>
+                        <h5 class="mb-0 ">122</h5>
+                    </div>
+                    <a href="task.html" title="view-members" class="btn btn-link text-decoration-none  rounded-1"><i class="icofont-hand-drawn-right fs-2 "></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 col-lg-4 col-xl-4 col-xxl-4">
+        <div class="card ">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="avatar lg  rounded-1 no-thumbnail bg-lightblue color-defult"><i class="bi bi-list-check fs-4"></i></div>
+                    <div class="flex-fill ms-4">
+                        <div class="">전체 이슈</div>
+                        <h5 class="mb-0 ">376</h5>
+                    </div>
+                    <a href="task.html" title="space-used" class="btn btn-link text-decoration-none  rounded-1"><i class="icofont-hand-drawn-right fs-2 "></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 col-lg-4 col-xl-4 col-xxl-4">
+        <div class="card ">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="avatar lg  rounded-1 no-thumbnail bg-lightgreen color-defult"><i class="bi bi-clipboard-data fs-4"></i></div>
+                    <div class="flex-fill ms-4">
+                        <div class="">진행날짜</div>
+                        <h5 class="mb-0 ">74</h5>
+                    </div>
+                    <a href="task.html" title="renewal-date" class="btn btn-link text-decoration-none  rounded-1"><i class="icofont-hand-drawn-right fs-2 "></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div><!-- Row End -->
+
+
+
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                

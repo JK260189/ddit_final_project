@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.statistics.dao.StatisticsDAO">
+
+<select id="selectProjectCount" parameterType="int" resultType="int">
+	SELECT COUNT(PROJECT_ID)
+	  FROM PROJECT
+	 WHERE COMPANY_ID = #{companyId}
+</select>
+
+<select id="selectProjectStartDate" parameterType="int" resultType="date">
+	SELECT PROJECT_START_DATE
+	  FROM PROJECT
+	 WHERE PROJECT_ID = #{projectId}
+</select>
+
+<select id="selectProjectEndDate" parameterType="int" resultType="date">
+	SELECT PROJECT_END_DATE
+	  FROM PROJECT
+	 WHERE PROJECT_ID = #{projectId}
+</select>
+
+<select id="selectProjectStatusIncomplete" parameterType="int" resultType="int">
+	SELECT COUNT(PROJECT_STATUS_ID)
+	  FROM PROJECT
+	 WHERE COMPANY_ID = #{companyId}
+	   AND PROJECT_STATUS_ID = 1
+</select>
+
+<select id="selectProjectStatusComplete" parameterType="int" resultType="int">
+	SELECT COUNT(PROJECT_STATUS_ID)
+	  FROM PROJECT
+	 WHERE COMPANY_ID = #{companyId}
+	   AND PROJECT_STATUS_ID = 2
+</select>
+
+<select id="selectProjectWorkPriorityCount" parameterType="int" resultType="int">
+	SELECT COUNT(PROJECT_PRIORITY_ID)
+	  FROM PROJECT_WORK
+	 WHERE COMPANY_ID = #{companyId}
+</select>
+
+<select id="selectProjectWorkPriorityEmergency" parameterType="int" resultType="int">
+	SELECT COUNT(PROJECT_PRIORITY_ID)
+	  FROM PROJECT_WORK
+	 WHERE COMPANY_ID = #{companyId}
+	   AND PROJECT_PRIORITY_ID = 1
+</select>
+
+<select id="selectProjectWorkPriorityHigh" parameterType="int" resultType="int">
+	SELECT COUNT(PROJECT_PRIORITY_ID)
+	  FROM PROJECT_WORK
+	 WHERE COMPANY_ID = #{companyId}
+	   AND PROJECT_PRIORITY_ID = 2
+</select>
+
+<select id="selectProjectWorkPriorityNormal" parameterType="int" resultType="int">
+	SELECT COUNT(PROJECT_PRIORITY_ID)
+	  FROM PROJECT_WORK
+	 WHERE COMPANY_ID = #{companyId}
+	   AND PROJECT_PRIORITY_ID = 3
+</select>
+
+<select id="selectProjectWorkPriorityLow" parameterType="int" resultType="int">
+	SELECT COUNT(PROJECT_PRIORITY_ID)
+	  FROM PROJECT_WORK
+	 WHERE COMPANY_ID = #{companyId}
+	   AND PROJECT_PRIORITY_ID = 4
+</select>
+
+<select id="selectProjectWorkStatusCount" parameterType="int" resultType="int">
+	SELECT COUNT(PROJECT_WORK_STATUS_ID)
+	  FROM PROJECT_WORK
+	 WHERE COMPANY_ID = #{companyId}
+</select>
+
+<select id="selectProjectWorkStatusRequest" parameterType="int" resultType="int">
+	SELECT COUNT(PROJECT_WORK_STATUS_ID)
+	  FROM PROJECT_WORK
+	 WHERE COMPANY_ID = #{companyId}
+	   AND PROJECT_WORK_STATUS_ID = 1
+</select>
+
+<select id="selectProjectWorkStatusProceed" parameterType="int" resultType="int">
+	SELECT COUNT(PROJECT_WORK_STATUS_ID)
+	  FROM PROJECT_WORK
+	 WHERE COMPANY_ID = #{companyId}
+	   AND PROJECT_WORK_STATUS_ID = 2
+</select>
+
+<select id="selectProjectWorkStatusFeedback" parameterType="int" resultType="int">
+	SELECT COUNT(PROJECT_WORK_STATUS_ID)
+	  FROM PROJECT_WORK
+	 WHERE COMPANY_ID = #{companyId}
+	   AND PROJECT_WORK_STATUS_ID = 3
+</select>
+
+<select id="selectProjectWorkStatusComplete" parameterType="int" resultType="int">
+	SELECT COUNT(PROJECT_WORK_STATUS_ID)
+	  FROM PROJECT_WORK
+	 WHERE COMPANY_ID = #{companyId}
+	   AND PROJECT_WORK_STATUS_ID = 4
+</select>
+
+<select id="selectProjectWorkStatusPostpone" parameterType="int" resultType="int">
+	SELECT COUNT(PROJECT_WORK_STATUS_ID)
+	  FROM PROJECT_WORK
+	 WHERE COMPANY_ID = #{companyId}
+	   AND PROJECT_WORK_STATUS_ID = 5
+</select>
+
+<select id="selectProjectIssueStatusCount" parameterType="int" resultType="int">
+	SELECT COUNT(PROJECT_ISSUE_CODE_ID)
+	  FROM PROJECT_ISSUE
+	 WHERE COMPANY_ID = #{companyId}
+</select>
+
+<select id="selectProjectIssueStatusEmergency" parameterType="int" resultType="int">
+	SELECT COUNT(PROJECT_ISSUE_CODE_ID)
+	  FROM PROJECT_ISSUE
+	 WHERE COMPANY_ID = #{companyId}
+	   AND PROJECT_ISSUE_CODE_ID = 1
+</select>
+
+<select id="selectProjectIssueStatusNormal" parameterType="int" resultType="int">
+	SELECT COUNT(PROJECT_ISSUE_CODE_ID)
+	  FROM PROJECT_ISSUE
+	 WHERE COMPANY_ID = #{companyId}
+	   AND PROJECT_ISSUE_CODE_ID = 3
+</select>
+
+<select id="selectProjectIssueStatusLow" parameterType="int" resultType="int">
+	SELECT COUNT(PROJECT_ISSUE_CODE_ID)
+	  FROM PROJECT_ISSUE
+	 WHERE COMPANY_ID = #{companyId}
+	   AND PROJECT_ISSUE_CODE_ID = 4
+</select>
+
+<select id="selectProjectIssueCategoryError" parameterType="int" resultType="int">
+	SELECT COUNT(TRACKER_ID)
+	  FROM PROJECT_ISSUE
+	 WHERE COMPANY_ID = #{companyId}
+	   AND TRACKER_ID = 1
+</select>
+
+<select id="selectProjectIssueCategoryModify" parameterType="int" resultType="int">
+	SELECT COUNT(TRACKER_ID)
+	  FROM PROJECT_ISSUE
+	 WHERE COMPANY_ID = #{companyId}
+	   AND TRACKER_ID = 2
+</select>
+
+<select id="selectProjectIssueCategoryEvent" parameterType="int" resultType="int">
+	SELECT COUNT(TRACKER_ID)
+	  FROM PROJECT_ISSUE
+	 WHERE COMPANY_ID = #{companyId}
+	   AND TRACKER_ID = 3
+</select>
+
+<select id="selectProjectIssueContentByProject" parameterType="int" resultType="kr.or.ddit.statistics.vo.StatisticsVO">
+	SELECT COUNT(PROJECT_ISSUE_CODE_ID)
+     FROM PROJECT_ISSUE
+    WHERE COMPANY_ID = #{companyId}
+      AND PROJECT_ID = #{projectId}
+</select>
+
+</mapper>

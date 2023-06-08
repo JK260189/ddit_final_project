@@ -1,0 +1,112 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib	uri="http://www.springframework.org/security/tags" prefix="security" %>
+<style>
+    #gitGraph {
+        width: 100px; /* 원하는 너비로 변경 */
+        height: 100px; /* 원하는 높이로 변경 */
+    }
+</style>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/gitgraph.js/1.11.4/gitgraph.min.js"></script>
+
+   <canvas id="gitGraph">
+
+   </canvas>
+
+
+<security:authentication property="principal" var="principal"/>
+
+<input id="projectIdHidden" type="hidden" value="${projectId }">
+<input id="companyIdHidden" type="hidden" value="${companyId }">
+
+  <script>
+  let projectIdHidden = document.querySelector('#projectIdHidden');
+  let companyIdHidden = document.querySelector('#companyIdHidden');
+  let projectIdHiddenValue = projectIdHidden.value;
+  let companyIdHiddenValue = companyIdHidden.value;
+  console.log("companyIdHiddenValue = ",companyIdHiddenValue);
+  console.log("projectIdHiddenValue = ",projectIdHiddenValue);
+  headers['Content-Type'] = 'application/json'
+  headers['accept'] = 'application/json'
+
+  axios.get(`/ourmine/company/\${companyIdHiddenValue}/project/\${projectIdHiddenValue}/git/gitListJson`, {headers : headers})
+      .then(resp => {
+	      let data = resp.data;
+	      console.log("git Date :", data);
+
+	      // 사용자 정의 템플릿 생성
+	      let myTemplateConfig = {
+		      colors: ["#979797", "#008fb5", "#f1c109"], // 브랜치 색상 설정
+		      branch: {
+			      lineWidth: 10,
+			      spacingX: 30,
+			      mergeStyle: "bezier",
+			      showLabel: false,
+		      },
+		      commit: {
+			      spacingY: -30,
+			      dot: {
+				      size: 12,
+			      },
+			      message: {
+				      displayAuthor: false,
+				      displayBranch: false,
+				      displayHash: false,
+				      font: "normal 12pt Arial",
+				      color: "black",
+			      },
+		      },
+	      };
+
+	      let myTemplate = new GitGraph.Template(myTemplateConfig);
+
+	      // GitGraph 인스턴스 생성 시 사용자 정의 템플릿 적용
+	      let gitgraph = new GitGraph({template: myTemplate, orientation: "horizontal", elementId: "gitGraph"});
+
+	      // main 브랜치 생성
+	      let main = gitgraph.branch("main");
+
+
+
+
+
+
+// data를 시간 순으로 정렬
+	      data.sort((a, b) => new Date(a.commitDate) - new Date(b.commitDate));
+
+// 브랜치를 담을 객체
+	      let branches = {};
+
+// data 순회하면서 브랜치와 커밋 생성
+	      data.forEach((commitData, index) => {
+		      let branchName = commitData.branchName;
+
+		      // BRANCH_FROM에 해당하는 브랜치를 parentBranch로 설정
+		      let parentBranch = branches[commitData.branchFrom];
+
+		      // 브랜치가 존재하지 않으면 생성
+		      if (!branches[branchName]) {
+			      // 부모 브랜치가 있으면 해당 브랜치에서 새 브랜치 생성
+			      if (parentBranch) {
+				      branches[branchName] = parentBranch.branch(branchName);
+			      } else {
+				      branches[branchName] = gitgraph.branch(branchName);
+			      }
+		      }
+
+		      // 해당 브랜치에 커밋
+		      branches[branchName].commit({
+			      message: `Commit by \${commitData.memberName} at \${commitData.commitMessage} : \${commitData.commitDate} `,
+			      detailId: commitData.gitId,  // optional, adds hyperlinks to commits
+			      author: commitData.memberName,  // optional, specify the author of the commit
+		      });
+
+		      // IS_MERGED 값이 1이면 해당 브랜치를 MERGE_BRANCH_NAME으로 병합
+		      if (commitData.isMerged == 1) {
+			      let mergeBranch = branches[commitData.mergeBranchName];
+			      if (mergeBranch) {
+				      mergeBranch.merge(branches[branchName], `Merge \${commitData.memberName}'s work into \${commitData.mergeBranchName}`);
+			      }
+		      }
+	      })
+      });
+  </script>

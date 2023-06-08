@@ -1,0 +1,64 @@
+package kr.or.ddit.dashboard.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.dashboard.service.DashboardService;
+import lombok.RequiredArgsConstructor;
+
+@Controller
+@RequiredArgsConstructor
+@RequestMapping("/company/{companyId}/project/{projectId}/dashBoard")
+public class DashboardController {
+	
+	
+	private final DashboardService service;
+	
+	@GetMapping
+	public String dashboard(@PathVariable int projectId, @PathVariable int companyId, Model model) {
+		model.addAttribute("projectId",projectId);
+		model.addAttribute("companyId",companyId);
+		return "project/dashBoard/projectDashBoard";
+		
+	}
+	
+	@GetMapping("/{dashboardId}") // 
+	public String dashboardSelect() {
+		return null;
+	}
+	
+	@GetMapping("/dashboardForm")  //
+	public String dashboardForm() {
+		return null;
+	}
+	
+	@PostMapping("/dashboardForm") //
+	public String dashboardJoin() {
+		return null;
+	}
+
+	
+	@GetMapping("/dashboardView") // 
+	public String dashboardView() {
+		return null;
+	}
+	
+	@PostMapping("/dashboardView") // 
+	public String dashboardUpdate() {
+		return null;
+	}
+	
+	@GetMapping("/dashboardDelete") // 
+	public String dashboardDeleteForm() {
+		return null;
+	}
+	
+	@PostMapping("/dashboardDelete") // 
+	public String dashboardDelete() {
+		return null;
+	}
+}

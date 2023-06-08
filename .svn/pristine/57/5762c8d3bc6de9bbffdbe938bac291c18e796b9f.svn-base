@@ -1,0 +1,15 @@
+package kr.or.ddit.chatting.service;
+
+import java.util.List;
+
+import kr.or.ddit.chatting.vo.ChatVO;
+import kr.or.ddit.member.vo.MemberVO;
+
+public interface ChattingService {
+	
+	public List<MemberVO> selectChatCoMemList(int companyId);
+	
+	public List<ChatVO> selectChatList(int chattingId);
+	
+	public String selectLastContent(int chattingId);
+}

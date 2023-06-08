@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.chatting.dao.ChattingDAO">
+	
+
+	<select id="selectChatCoMemList" resultType="kr.or.ddit.member.vo.MemberVO">
+		SELECT DISTINCT M.MEMBER_NAME,DEPARTMENT_NAME,M.MEMBER_EMAIL, M.MEMBER_Id
+		FROM PROJECT_ATTEND PA   
+		         JOIN ASSOCIATION A on PA.MEMBER_ID = A.MEMBER_ID and PA.COMPANY_ID = A.COMPANY_ID
+		         JOIN MEMBER M on A.MEMBER_ID = M.MEMBER_ID
+		         JOIN ORGCHART O ON O.ORGCHART_ID = A.ORGCHART_ID
+		WHERE COMPANY_ID = #{companyId}
+        ORDER BY DEPARTMENT_NAME
+	</select>
+	
+	<select id="selectDeptList" resultType="kr.or.ddit.member.vo.MemberVO">
+	    SELECT *
+	    FROM (
+	         SELECT ORGCHART.*, LEVEL AS LVL
+	         FROM ORGCHART
+	         START WITH COMPANY_ID = #{companyId} AND SENIOR_DEPARTMENT_ID IS NULL
+	         CONNECT BY PRIOR ORGCHART_ID = SENIOR_DEPARTMENT_ID
+	        )
+	    WHERE LVL = 2 AND DEPARTMENT_REMOVE_WHETHER IS NULL
+	        		ORDER BY LVL
+	</select>
+	
+	<select id="selectTeamMemList" resultType="kr.or.ddit.member.vo.MemberVO" parameterType="kr.or.ddit.member.vo.MemberVO">
+		SELECT DISTINCT ORG.*, LEVEL, A.MEMBER_ID, M.MEMBER_NAME
+
+		FROM ORGCHART ORG
+		         JOIN ASSOCIATION A ON ORG.ORGCHART_ID = A.ORGCHART_ID
+		         JOIN MEMBER M ON A.MEMBER_ID = M.MEMBER_ID
+		WHERE ORG.ORGCHART_ID IN (
+		    SELECT ORGCHART_ID
+		    FROM ORGCHART
+		    START WITH COMPANY_ID = #{companyId} AND ORGCHART_ID = #{orgchartId}
+		    CONNECT BY PRIOR ORGCHART_ID = SENIOR_DEPARTMENT_ID
+		)
+		START WITH ORG.COMPANY_ID = #{companyId} AND ORG.ORGCHART_ID = #{orgchartId}
+		
+		CONNECT BY PRIOR ORG.ORGCHART_ID = ORG.SENIOR_DEPARTMENT_ID
+		ORDER BY LEVEL
+	</select>
+	<select id="selectTeamList" resultType="kr.or.ddit.member.vo.MemberVO" parameterType="kr.or.ddit.member.vo.MemberVO">
+		SELECT DISTINCT ORG.*, LEVEL, A.MEMBER_ID, M.MEMBER_NAME
+
+		FROM ORGCHART ORG
+		         JOIN ASSOCIATION A ON ORG.ORGCHART_ID = A.ORGCHART_ID
+		         JOIN MEMBER M ON A.MEMBER_ID = M.MEMBER_ID
+		WHERE ORG.ORGCHART_ID IN (
+		    SELECT ORGCHART_ID
+		    FROM ORGCHART
+		    START WITH COMPANY_ID = #{companyId} AND ORGCHART_ID = #{orgchartId}
+		    CONNECT BY PRIOR ORGCHART_ID = SENIOR_DEPARTMENT_ID
+		)
+		START WITH ORG.COMPANY_ID = #{companyId} AND ORG.ORGCHART_ID = #{orgchartId}
+		
+		CONNECT BY PRIOR ORG.ORGCHART_ID = ORG.SENIOR_DEPARTMENT_ID
+		ORDER BY LEVEL
+	</select>
+
+	<select id="selectChatList" resultType="kr.or.ddit.chatting.vo.ChatVO" parameterType="int">
+		SELECT
+		   CL.CHATTING_ID
+		   , CL.MEMBER_ID
+           , CL.CHATTING_CONNECT_TIME
+           , C.CHATTING_NAME
+           , C.CHATTING_MEM_NAME
+           , S.CHATTING_CONTENT_TIME
+           , CC.CHATTING_CONTENT
+		FROM 
+			CHATTING_LIST CL 
+            JOIN CHATTING C ON CL.CHATTING_ID = C.CHATTING_ID
+            JOIN (SELECT DISTINCT CHATTING_ID, max(chatting_content_time)over(PARTITION BY CHATTING_ID) AS CHATTING_CONTENT_TIME
+                    FROM CHATTING_CONTENT) S ON CL.CHATTING_ID = S.CHATTING_ID
+            JOIN CHATTING_CONTENT CC ON S.CHATTING_CONTENT_TIME = CC.CHATTING_CONTENT_TIME
+		WHERE 
+			CL.MEMBER_ID = #{memId} and c.CHATTING_WHTHER_GROUP = 'N' 
+		ORDER BY 
+			S.CHATTING_CONTENT_TIME DESC
+	</select>
+	
+	<select id="selectGroupChatList" resultType="kr.or.ddit.chatting.vo.ChatVO" parameterType="int">
+        SELECT DISTINCT
+		   CL.CHATTING_ID
+		   , CL.MEMBER_ID
+           , CL.CHATTING_CONNECT_TIME
+           , C.CHATTING_NAME
+		FROM 
+			CHATTING_LIST CL 
+            JOIN CHATTING C ON CL.CHATTING_ID = C.CHATTING_ID
+		WHERE 
+			CL.MEMBER_ID = #{memberId} and C.CHATTING_WHTHER_GROUP = 'Y' 
+		ORDER BY 
+			CL.CHATTING_CONNECT_TIME DESC
+	</select>
+<!-- 	<select id="selectGroupChatList" resultType="kr.or.ddit.chatting.vo.ChatVO" parameterType="int"> -->
+<!--         SELECT -->
+<!-- 		   CL.CHATTING_ID -->
+<!-- 		   , CL.MEMBER_ID -->
+<!--            , CL.CHATTING_CONNECT_TIME -->
+<!--            , C.CHATTING_NAME -->
+<!--            , S.CHATTING_CONTENT_TIME -->
+<!--            , CC.CHATTING_CONTENT -->
+<!-- 		FROM  -->
+<!-- 			CHATTING_LIST CL  -->
+<!--             JOIN CHATTING C ON CL.CHATTING_ID = C.CHATTING_ID -->
+<!--             JOIN (SELECT DISTINCT CHATTING_ID, max(chatting_content_time)over(PARTITION BY CHATTING_ID) AS CHATTING_CONTENT_TIME -->
+<!--                     FROM CHATTING_CONTENT) S ON CL.CHATTING_ID = S.CHATTING_ID -->
+<!--             JOIN CHATTING_CONTENT CC ON S.CHATTING_CONTENT_TIME = CC.CHATTING_CONTENT_TIME -->
+<!-- 		WHERE  -->
+<!-- 			CL.MEMBER_ID = #{memberId} and C.CHATTING_WHTHER_GROUP = 'Y'  -->
+<!-- 		ORDER BY  -->
+<!-- 			S.CHATTING_CONTENT_TIME DESC; -->
+<!-- 	</select> -->
+	
+	<insert id="insertChatRoom" parameterType="kr.or.ddit.chatting.vo.ChatVO" >
+		INSERT INTO CHATTING
+			(CHATTING_NAME,
+			CHATTING_WHTHER_GROUP,
+			CHATTING_MEM_NAME)
+	    VALUES 
+	        (#{chattingName , jdbcType=VARCHAR},
+	        #{chattingWhtherGroup , jdbcType=VARCHAR},
+	        #{chattingMemName, jdbcType=VARCHAR})
+		<selectKey keyProperty="chattingId" resultType="int" order="AFTER">
+        	SELECT MAX(CHATTING_ID) FROM CHATTING
+		</selectKey>
+	</insert>
+	
+	<select id="selectCheckRoom" resultType="kr.or.ddit.chatting.vo.ChatVO" parameterType="kr.or.ddit.chatting.vo.ChatVO">
+		<![CDATA[
+		SELECT 
+			rownum
+			,CHATTING_ID
+			,CHATTING_NAME
+			,CHATTING_WHTHER_GROUP
+			,CHATTING_MEM_NAME
+			,CHATTING_WHTHER_REMOVE
+		FROM CHATTING
+		WHERE 1=1
+		AND CHATTING_WHTHER_GROUP ='N'
+		AND ((CHATTING_NAME = #{chattingName} and CHATTING_MEM_NAME = #{chattingMemName})
+				OR (CHATTING_NAME = #{chattingMemName} and CHATTING_MEM_NAME = #{chattingName}))
+		AND rownum < 2
+		]]>
+	</select>
+	<select id="selectChattingAlarmList" parameterType="int" resultType="int">
+		SELECT MEMBER_ID
+		FROM CHATTING_LIST
+		WHERE CHATTING_ID = #{chattingId} 
+	</select>
+	<select id="selectChattingAlarmReceiver" parameterType="int" resultType="String">
+		SELECT MEMBER_NAME
+		FROM MEMBER
+		WHERE MEMBER_ID = #{memberId}
+	</select>
+	<select id="getThisChattingMemberList" parameterType="int" resultType="String">
+		SELECT 
+		    MEMBER_NAME
+		FROM MEMBER M
+		    JOIN CHATTING_LIST CL ON M.MEMBER_ID = CL.MEMBER_ID 
+		WHERE CHATTING_ID = #{chattingId}
+	</select>
+	<select id="selectSenderName" parameterType="String" resultType="String">
+		SELECT 
+			MEMBER_NAME
+		FROM 
+			MEMBER
+		WHERE 
+			MEMBER_EMAIL = #{sender};
+	</select>
+	<delete id="chattingRoomOut" parameterType="kr.or.ddit.chatting.vo.ChatVO">
+		DELETE FROM CHATTING_LIST
+		
+		WHERE
+		    CHATTING_ID = #{chattingId}
+		    AND MEMBER_ID = #{memberId}
+	</delete>
+	
+ </mapper> 

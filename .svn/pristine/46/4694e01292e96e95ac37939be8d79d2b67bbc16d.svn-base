@@ -1,0 +1,85 @@
+package kr.or.ddit.chatting.service;
+
+import java.util.List;
+
+import javax.transaction.Transactional;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.chatting.dao.ChattingDAO;
+import kr.or.ddit.chatting.vo.ChatVO;
+import kr.or.ddit.member.vo.MemberVO;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@Slf4j
+@RequiredArgsConstructor
+public class ChattingServiceImpl implements ChattingService {
+
+	private final ChattingDAO chattingDAO;
+	
+	
+	@Override
+	public List<MemberVO> selectChatCoMemList(int companyId) {
+		
+		return chattingDAO.selectChatCoMemList(companyId);
+	}
+
+	@Override
+	public List<ChatVO> selectChatList(int chattingId) {
+		
+		return chattingDAO.selectChatList(chattingId);
+	}
+
+	@Override
+	public String selectLastContent(int chattingId) {
+
+		return chattingDAO.selectLastContent(chattingId);
+	}
+
+	@Override
+	@Transactional
+	public int insertChatRoom(ChatVO chatVO) {
+		int chatRoom = chattingDAO.insertChatRoom(chatVO);
+		List<Integer> memberList = chatVO.getMemberList();
+		
+		if(chatVO.getMemberList() != null) {
+//			for(int i=0; i<memberList.size(); i++) {
+			for(Integer a : memberList) {
+				int memberId = a;
+				chatVO.setMemberId(memberId);
+				chattingDAO.insertChatMemList(chatVO);
+			}
+		}
+		
+		log.info("chatVO:{}",chatVO);
+		
+		return chatRoom;
+	}
+
+	@Override
+	public List<MemberVO> selectDeptList(int companyId) {
+		
+		return chattingDAO.selectDeptList(companyId);
+	}
+	@Override
+	public List<MemberVO> selectTeamList(MemberVO memberVO) {
+		
+		return chattingDAO.selectTeamList(memberVO);
+	}
+
+	@Override
+	public void insertMessage(ChatVO chatVO) {
+		chattingDAO.insertMessage(chatVO);
+		
+	}
+
+	@Override
+	public List<ChatVO> selectChatCont(int chattingId) {
+		List<ChatVO> list = chattingDAO.selectChatCont(chattingId);
+		
+		return list;
+	}
+
+}

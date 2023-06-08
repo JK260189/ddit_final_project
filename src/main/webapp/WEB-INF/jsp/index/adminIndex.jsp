@@ -1,0 +1,396 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+
+
+<style>
+#scrollArea{
+	height: 360px;
+	overflow: auto;
+  	position: relative;
+}
+#scrollArea::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, and Opera */
+}
+</style>
+
+<div id="mytask-layout" class="theme-indigo">
+
+    <!-- main body area -->
+    <div class="main px-lg-4 px-md-4">
+
+        <!-- Body: Body -->
+        <div class="body d-flex py-3">
+            <div class="p-4 m-4">
+                <div class="row clearfix g-3">
+                    <div class="col-xl-8 col-lg-12 col-md-12 flex-column">
+                        <div class="row g-3">
+                            <div class="col-md-12 mb-2">
+                                <div class="card">
+                                    <div class="card-header py-3 d-flex justify-content-between bg-transparent border-bottom-0 mt-2">
+                                        <h6 class="mb-0 fw-bold ">접속자 변동 내역</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="ac-line-transparent" id="apex-emplyoeeAnalytics11"></div>
+                                    </div>
+                                </div>
+                            </div>
+<!-- 여기원형 -->			<div class="row g-3 mb-3 row-deck">
+							<div class="col-md-12 col-lg-6">
+		                        <div class="card">
+		                            <div class="card-body">
+		                               <h6 class="mb-3 fw-bold ">매출</h6>
+		                                <div class="d-flex justify-content-end text-center">
+		                                    <div class="p-2 ms-4">
+		                                        <h6 class="mb-0 fw-bold" id="salesSUM"></h6>
+		                                        <small class="text-muted">수입(원)</small>
+		                                    </div>
+		                                </div>
+		                                <div class="" id="incomeanalytics11"></div>
+		                            </div>
+		                        </div>
+		                    </div>
+
+		                    
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header py-3 d-flex justify-content-between bg-transparent border-bottom-0">
+                                        <h6 class="mb-0 fw-bold ">회사 소속 회원</h6>
+                                        <div class="p-2 ms-4 text-center">
+		                                    <h4 class="mb-0 fw-bold " id="joinCompanyMemberCNT"></h4>
+	                                        <small class="text-muted">명</small>
+	                                    </div>
+                                    </div>
+                                    <div class="card-body pt-4">
+                                        <div class="mt-5" id="apex-MainCategories11"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-12 col-md-12">
+                        <div class="row g-3 row-deck">
+                            <div class="col-md-6 col-lg-6 col-xl-12">
+                                <div class="card bg-primary">
+                                    <div class="card-body row">
+                                        <div class="col">
+                                            <span class="avatar lg bg-white rounded-circle text-center d-flex align-items-center justify-content-center"><i class="icofont-file-text fs-5"></i></span>
+											<!-- 회원수 표시 -->
+                                            <h1 class="mt-3 mb-0 fw-bold text-white" id="selMemCNT"></h1>
+                                            <span class="text-white">회원</span>
+                                        </div>
+                                        <div class="col">
+                                            <img class="img-fluid" src="${cPath }/resources/images/task-view.svg" alt="interview">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 col-xl-12  flex-column">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center flex-fill">
+                                            <span class="avatar lg light-success-bg rounded-circle text-center d-flex align-items-center justify-content-center"><i class="icofont-holding-hands fs-5"></i></span>
+                                            <div class="d-flex flex-column ps-3 flex-fill">
+                                                <h6 class="fw-bold mb-0 fs-4" id="selSubMemCNT"></h6>
+                                                <span class="text-muted">구독회사</span>
+                                            </div>
+                                            <i class="icofont-chart-line fs-3 text-muted"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-lg-12 col-xl-12">
+                                <div class="card">
+                                <div class="card-header py-3 d-flex justify-content-between bg-transparent border-bottom-0">
+                                    <h6 class="mb-0 fw-bold ">구독마감 임박 회원</h6>
+                                </div>
+                                <div class="card-body" id="scrollArea">
+                                    <div class="flex-grow-1" id="subEndCloseComListArea">
+
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="card light-danger-bg">
+							<div class="col-md-12">
+		                        <div class="card mb-3">
+		                            <div class="card-header d-flex justify-content-between align-items-center bg-transparent border-bottom-0">
+		                                <h6 class="m-0 fw-bold">구독현황</h6>
+		                            </div>
+		                            <div class="card-body">
+		                                <div id="apex-chart-line-column11"></div>
+		                            </div>
+		                        </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- Row End -->
+            </div>
+        </div> 
+    </div>
+</div>
+
+<script>
+const selMemCNT = $("#selMemCNT");
+const selSubMemCNT = $("#selSubMemCNT");
+const subEndCloseComListArea = $("#subEndCloseComListArea");
+const companyMemberCNT = $("#joinCompanyMemberCNT");
+const salesSUM = $("#salesSUM");
+
+let selMemChartNum = '';
+const getMemCNT=()=>{
+	console.log("getMemCNT");
+	$.ajax({
+		  type:"get",
+		  url:"/ourmine/index/adminIndex/getMemCNT",
+
+		  dataType:"json",
+		  async:false,
+		  success:function(resp){
+		      console.log("getMemCNT결과:{}",resp);  // 요기 코드가 길어지면  별도 함수로 처리/ 그래야 가독성이 유지됨
+		      selMemCNT.text(resp);
+		      selMemChartNum = resp;
+		  },
+		  error: function (request, status, error) {
+		      console.log("code: " + request.status)
+		      console.log("message: " + request.responseText)
+		      console.log("error: " + error);
+		  }
+	
+	});
+
+}
+const getSubMemCNT=()=>{
+	console.log("getSubMemCNT");
+	$.ajax({
+		  type:"get",
+		  url:"/ourmine/index/adminIndex/selectSubscribeCNT",
+
+		  dataType:"json",
+		  success:function(resp){
+		      console.log("selectSubscribeCNT결과:{}",resp);  
+		      selSubMemCNT.text(resp);
+		  },
+		  error: function (request, status, error) {
+		      console.log("code: " + request.status)
+		      console.log("message: " + request.responseText)
+		      console.log("error: " + error);
+		  }
+	
+	});
+
+}
+const selectSubEndCloseComList=()=>{
+	console.log("selectSubEndCloseComList");
+	$.ajax({
+		  type:"get",
+		  url:"/ourmine/index/adminIndex/selectSubEndCloseComList",
+
+		  dataType:"json",
+		  success:function(resp){
+		      console.log("selectSubEndCloseComList결과:{}",resp);
+
+		      for(let i=0; i< resp.length; i++){
+			      subEndCloseComListArea.append(
+				    	`
+		                  <div class="py-2 d-flex align-items-center border-bottom flex-wrap">
+		                      <div class="d-flex align-items-center flex-fill">
+		                          <img class="avatar lg rounded-circle img-thumbnail" src="${cPath }/resources/images/lg/avatar1.jpg" alt="profile">
+		                          <div class="d-flex flex-column ps-3">
+		                              <h6 class="fw-bold mb-0 small-14">\${resp[i].memberName}</h6>
+		                              <span class="text-muted">\${resp[i].companyName}</span>
+		                          </div>
+		                      </div>
+		                      <div class="time-block text-truncate">
+		                          <i class="icofont-clock-time"></i>\${resp[i].subscribeEndDate}
+		                      </div>
+		                  </div>
+				    	`			      
+		  			)
+		     	 }
+		      },
+		  error: function (request, status, error) {
+		      console.log("code: " + request.status)
+		      console.log("message: " + request.responseText)
+		      console.log("error: " + error);
+		  }
+	
+	});
+
+}
+let comMemChartNum ='';
+const joinCompanyMemberCNT=()=>{
+	console.log("joinCompanyMemberCNT");
+	$.ajax({
+		  type:"get",
+		  url:"/ourmine/index/adminIndex/joinCompanyMemberCNT",
+		  async:false,
+		  dataType:"json",
+		  success:function(resp){
+		      console.log("joinCompanyMemberCNT결과:{}",resp);  
+		      companyMemberCNT.text(resp);
+		      comMemChartNum = resp;
+		  },
+		  error: function (request, status, error) {
+		      console.log("code: " + request.status)
+		      console.log("message: " + request.responseText)
+		      console.log("error: " + error);
+		  }
+	
+	});
+}
+
+const selectSalesSUM=()=>{
+	console.log("selectSalesSUM");
+	$.ajax({
+		  type:"get",
+		  url:"/ourmine/index/adminIndex/selectSalesSUM",
+
+		  dataType:"json",
+		  success:function(resp){
+		      console.log("selectSalesSUM결과:{}",resp);  
+		      let formattedResp = resp.toLocaleString(undefined, { maximumFractionDigits: 0 });
+		      salesSUM.text(formattedResp);
+		  },
+		  error: function (request, status, error) {
+		      console.log("code: " + request.status)
+		      console.log("message: " + request.responseText)
+		      console.log("error: " + error);
+		  }
+	
+	});
+}
+let salesItemCNT ='';
+const selectSalesItemCNT=()=>{
+	console.log("selectSalesItemCNT");
+	$.ajax({
+		  type:"get",
+		  url:"/ourmine/index/adminIndex/selectSalesItemCNT",
+		  dataType:"json",
+		  async:false,
+		  success:function(resp){
+		      console.log("selectSalesItemCNT결과:{}",resp);  
+		      salesItemCNT=resp;
+		  },
+		  error: function (request, status, error) {
+		      console.log("code: " + request.status)
+		      console.log("message: " + request.responseText)
+		      console.log("error: " + error);
+		  }
+	
+	});
+}
+let subscribeJANUARY='';
+let subscribeFEBRUARY='';
+let subscribeMARCH='';
+let subscribeAPRIL='';
+let subscribeMAY='';
+let subscribeJUNE='';
+let subscribeJULY='';
+let subscribeAUGUST='';
+let subscribeSEPTEMBER='';
+let subscribeOCTOBER='';
+let subscribeNOVEMBER='';
+let subscribeDECEMBER='';
+
+const selectMonthlySubscribeCNT=()=>{
+	console.log("selectMonthlySubscribeCNT");
+	$.ajax({
+		  type:"get",
+		  url:"/ourmine/index/adminIndex/selectMonthlySubscribeCNT",
+		  dataType:"json",
+		  async:false,
+		  success:function(resp){
+		      console.log("selectMonthlySubscribeCNT결과:{}",resp);
+		      subscribeJANUARY = resp[0]["JANUARY"];
+		      subscribeFEBRUARY = resp[0]["FEBRUARY"];
+		      subscribeMARCH = resp[0]["MARCH"];
+		      subscribeAPRIL = resp[0]["APRIL"];
+		      subscribeMAY = resp[0]["MAY"];
+		      subscribeJUNE = resp[0]["JUNE"];
+		      subscribeJULY = resp[0]["JULY"];
+		      subscribeAUGUST = resp[0]["AUGUST"];
+		      subscribeSEPTEMBER = resp[0]["SEPTEMBER"];
+		      subscribeOCTOBER = resp[0]["OCTOBER"];
+		      subscribeNOVEMBER = resp[0]["NOVEMBER"];
+		      subscribeDECEMBER = resp[0]["DECEMBER"];
+		  },
+		  error: function (request, status, error) {
+		      console.log("code: " + request.status)
+		      console.log("message: " + request.responseText)
+		      console.log("error: " + error);
+		  }
+	
+	});
+}
+let JoinMemberJANUARY='';
+let JoinMemberFEBRUARY='';
+let JoinMemberMARCH='';
+let JoinMemberAPRIL='';
+let JoinMemberMAY='';
+let joinMemberJUNE='';
+let joinMemberJULY='';
+let joinMemberAUGUST='';
+let joinMemberSEPTEMBER='';
+let joinMemberOCTOBER='';
+let joinMemberNOVEMBER='';
+let joinMemberDECEMBER='';
+const selectMonthlyJoinMemberCNT=()=>{
+	console.log("selectMonthlyJoinMemberCNT");
+	$.ajax({
+		  type:"get",
+		  url:"/ourmine/index/adminIndex/selectMonthlyJoinMemberCNT",
+		  dataType:"json",
+		  async:false,
+		  success:function(resp){
+		      console.log("selectMonthlyJoinMemberCNT결과:{}",resp);  
+		      JoinMemberJANUARY = resp[0]["JANUARY"];
+		      JoinMemberFEBRUARY = resp[0]["FEBRUARY"];
+		      JoinMemberMARCH = resp[0]["MARCH"];
+		      JoinMemberAPRIL = resp[0]["APRIL"];
+		      JoinMemberMAY = resp[0]["MAY"];
+		      joinMemberJUNE = resp[0]["JUNE"];
+		      joinMemberJULY = resp[0]["JULY"];
+		      joinMemberAUGUST = resp[0]["AUGUST"];
+		      joinMemberSEPTEMBER = resp[0]["SEPTEMBER"];
+		      joinMemberOCTOBER = resp[0]["OCTOBER"];
+		      joinMemberNOVEMBER = resp[0]["NOVEMBER"];
+		      joinMemberDECEMBER = resp[0]["DECEMBER"];
+		  },
+		  error: function (request, status, error) {
+		      console.log("code: " + request.status)
+		      console.log("message: " + request.responseText)
+		      console.log("error: " + error);
+		  }
+	
+	});
+}
+getMemCNT();
+getSubMemCNT();
+selectSubEndCloseComList();
+joinCompanyMemberCNT();
+selectSalesSUM();
+selectSalesItemCNT();
+selectMonthlySubscribeCNT();
+selectMonthlyJoinMemberCNT();
+
+
+
+</script>
+
+<!-- Jquery Core Js -->
+<script src="${cPath}/resources/js/libscripts.bundle.js"></script>
+
+<!-- Plugin Js-->
+<script src="${cPath}/resources/js/apexcharts.bundle.js"></script>
+<script src="${cPath}/resources/js/adminIndex.js"></script>
+<script src="${cPath}/resources/js/dataTables.bundle.js"></script>
+
+<!-- Jquery Page Js -->
+<script src="${cPath}/resources/js/template.js"></script>
+

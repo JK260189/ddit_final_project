@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.alarm.dao.AlarmDAO">
+
+
+
+
+<insert id="insertAlarm" >
+    INSERT ALL
+    <foreach collection="alarms" item="item" >
+        <if test="item.projectId > 0">
+            into ALARM (PROJECT_ID, ALARM_CONTENT, ALARM_SENDER, SENDER_ID, RECEIVER_ID, ALARM_RECEIVER)
+            values (#{item.projectId}, #{item.alarmContent}, #{item.alarmSender}, #{item.senderId}, #{item.receiverId},#{item.alarmReceiver})
+        </if>
+        <if test="item.projectIssueId > 0">
+            into ALARM (PROJECT_ISSUE_ID, ALARM_CONTENT, ALARM_SENDER, SENDER_ID, RECEIVER_ID, ALARM_RECEIVER)
+            values (#{item.projectIssueId}, #{item.alarmContent}, #{item.alarmSender}, #{item.senderId}, #{item.receiverId},#{item.alarmReceiver})
+        </if>
+    </foreach>
+    SELECT * FROM DUAL
+</insert>
+
+<select id="alarmList" resultType="kr.or.ddit.alarm.vo.AlarmVO" parameterType="int">
+	SELECT
+    AL.*,
+    M.MEMBER_IMAGE_FILE_ROUTE,
+    M.FILE_EXTENSION,
+    (SELECT COUNT(*) FROM ALARM WHERE RECEIVER_ID = AL.RECEIVER_ID AND ALARM_REMOVE_WHETHER IS NULL ) AS ALARM_COUNT,
+    CASE
+        WHEN PROJECT_ISSUE_ID IS NOT NULL THEN 'ISSUE'
+        WHEN PROJECT_ID IS NOT NULL THEN 'PROJECT'
+        WHEN CHATTING_ID IS NOT NULL THEN 'CHATTING'
+        ELSE NULL
+        END AS Review
+FROM ALARM AL
+         JOIN MEMBER M ON AL.SENDER_ID = M.MEMBER_ID
+WHERE AL.RECEIVER_ID = #{receiverId} AND ALARM_REMOVE_WHETHER IS NULL
+ORDER BY AL.ALARM_DATE DESC
+
+</select>
+
+<select id="alarmSelect" resultType="kr.or.ddit.alarm.vo.AlarmVO" parameterType="int">
+	SELECT *
+	FROM ALARM
+	WHERE ALARM_ID = #{alarmId}
+</select>
+
+<update id="updateAlarm" parameterType="AlarmVO">
+	UPDATE ALARM
+	SET ALARM_REMOVE_WHETHER = 'Y'
+	WHERE ALARM_ID = #{alarmId}
+</update>
+
+</mapper>

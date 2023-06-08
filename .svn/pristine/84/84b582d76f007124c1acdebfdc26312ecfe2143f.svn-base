@@ -1,0 +1,50 @@
+package kr.or.ddit.dashboard.service;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import kr.or.ddit.dashboard.dao.DashboardDAO;
+import kr.or.ddit.dashboard.vo.DashboardVO;
+import lombok.RequiredArgsConstructor;
+
+
+@Service
+@RequiredArgsConstructor
+@Transactional
+public class DashboardServiceImpl implements DashboardService{
+	
+	private final DashboardDAO dashboardDAO; 
+	
+	@Override
+	public List<DashboardVO> dashboardList() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public DashboardVO dashboardSelect(int dashboardId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int insertrDashboard(DashboardVO dashboard) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int updateDashboard(DashboardVO dashboard) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int deleteDashboard(int dashboardId) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+}

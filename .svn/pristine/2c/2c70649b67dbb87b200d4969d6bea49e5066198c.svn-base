@@ -1,0 +1,85 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="security"%>
+
+    <h1>Git Commits</h1>
+
+    <div>
+        <label for="repository">Select Repository:</label>
+        <select id="repository"></select>
+    </div>
+
+    <div>
+        <h2>Commits:</h2>
+        <ul id="commits"></ul>
+    </div>
+
+    <security:authentication property="principal" var="principal" />
+
+<input id="projectIdHidden" type="hidden" value="${projectId }">
+<input id="companyIdHidden" type="hidden" value="${companyId }">
+    <script>
+
+	    let projectIdHidden = document.querySelector('#projectIdHidden');
+	    let companyIdHidden = document.querySelector('#companyIdHidden');
+
+	    let projectIdHiddenValue = projectIdHidden.value;
+	    let companyIdHiddenValue = companyIdHidden.value;
+	    headers['Content-Type'] = 'application/json'
+	    headers['accept'] = 'application/json'
+	    let repositorySelect = document.getElementById('repository');
+	    let commitsList = document.getElementById('commits');
+
+
+async 	function gitHubRequest() {
+		await 	axios.get(`/ourmine/company/\${companyIdHiddenValue}/project/\${projectIdHiddenValue}/git/gitHub`, {headers: headers})
+				.then(resp => {
+					let data = resp.data.repositories;
+					console.log('깃허브 요청', data)
+					createOption(data);
+				}).catch(error => console.log(error))
+        }
+
+
+	    async function gitRepository() {
+		    // 함수 시작시 첫번째 리포지토리에 대한 커밋 데이터를 가져오고 출력함
+		    let selectedRepo = repositorySelect.value;
+		    console.log("selectedRepo = ",selectedRepo)
+		    await axios.get(`/ourmine/company/\${companyIdHiddenValue}/project/\${projectIdHiddenValue}/git/gitCommits?repo=` + selectedRepo)
+			    .then(resp => {
+				    let commitData = resp.data;
+				    console.log("commitData = ",commitData);
+				    createList(commitData);
+			    });
+		    // 이후에는 "change" 이벤트가 발생했을 때 동일한 동작을 수행함
+		    repositorySelect.addEventListener('change', async (e) => {
+			    selectedRepo = e.target.value;
+			    console.log("selectedRepo = ",selectedRepo);
+			    await axios.get(`/ourmine/company/\${companyIdHiddenValue}/project/\${projectIdHiddenValue}/git/gitCommits?repo=` + selectedRepo)
+				    .then(resp => {
+					    let commitData = resp.data;
+					    console.log("commitData = ",commitData);
+					    createList(commitData);
+				    }).catch(error => console.log(error))
+		    })
+	    }
+
+	    gitHubRequest().then(gitRepository)
+
+	    function createOption(data){
+		    data.map(item => {
+			    let option = document.createElement('option');
+			    option.value = item;
+			    option.text = item;
+			    option.className = "gitHubRepository";
+			    repositorySelect.appendChild(option);
+		    })
+        }
+	    function createList(data){
+		    data.map(item => {
+			    let listItem = document.createElement('li');
+			    listItem.textContent = item
+			    commitsList.appendChild(listItem);
+		    })
+	    }
+
+    </script>

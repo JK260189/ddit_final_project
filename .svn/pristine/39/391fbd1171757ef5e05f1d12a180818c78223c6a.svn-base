@@ -1,0 +1,36 @@
+package kr.or.ddit.projectAttend.vo;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
+
+import lombok.Data;
+
+@Data
+public class GitVO implements Serializable {
+	 // GIT ID 깃아이디
+    private int gitId;
+
+    // 프로젝트 ID 프로젝트 ID
+    private int projectId;
+
+    // 회원 ID 회원ID
+    private int memberId;
+
+    // GIT URL GITURL
+    private String gitUrl;
+
+    // 커밋 일자 커밋일자
+    @DateTimeFormat(iso = ISO.DATE_TIME)// parsing 설정 String -> LocalDateTime
+   	@JsonFormat(shape = Shape.STRING)
+    private LocalDateTime commitDate;
+    
+    // GIT URL 삭제 여부
+    private String gitUrlRemoveWhether;
+
+}

@@ -1,0 +1,48 @@
+package kr.or.ddit.commons.service;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.commons.AdminIndexVO;
+import kr.or.ddit.commons.dao.AdminIndexDAO;
+
+@Service
+public class AdminIndexServiceImpl implements AdminIndexService {
+
+	@Inject
+	private AdminIndexDAO adminIndexDAO;
+	
+	@Override
+	public int selectMemberCNT() {
+
+		return adminIndexDAO.selectMemberCNT();
+	}
+
+	@Override
+	public int selectSubscribeCNT() {
+
+		return adminIndexDAO.selectSubscribeCNT();
+	}
+
+	@Override
+	public List<AdminIndexVO> selectSubEndCloseComList() {
+
+		return adminIndexDAO.selectSubEndCloseComList();
+	}
+
+	@Override
+	public int joinCompanyMemberCNT() {
+
+		return adminIndexDAO.selectMemberCNT();
+	}
+
+	@Override
+	public int selectSalesSUM() {
+
+		return adminIndexDAO.selectSalesSUM();
+	}
+
+}

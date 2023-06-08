@@ -1,0 +1,43 @@
+package kr.or.ddit.projecttodolist.service;
+
+import java.util.List;
+
+import org.springframework.security.core.Authentication;
+
+import kr.or.ddit.member.vo.MemberVO;
+import kr.or.ddit.projecttodolist.vo.ProjectTodoListVO;
+import kr.or.ddit.projectwork.vo.ProjectWorkVO;
+
+public interface ProjectTodoListService {
+	
+	// 일감별 todoList
+	public List<ProjectTodoListVO> projectTodoList(int projectWorkId);
+	
+	/**
+	 * 
+	 * @param projectTodoListId
+	 * @return
+	 */
+	public ProjectTodoListVO projectTodoListSelect(int projectTodoListId);
+	
+	/**
+	 * 
+	 * @param projectTodoList
+	 * @return
+	 */
+	public int insertrProjectTodoList(ProjectTodoListVO projectTodoList);
+	/**
+	 * 
+	 * @param projectTodoList
+	 * @return
+	 */
+	public int updateProjectTodoList(ProjectTodoListVO projectTodoList);
+	
+	/**
+	 * 
+	 * @param projectTodoListId
+	 * @return
+	 */
+	public int deleteProjectTodoList(int projectTodoListId);
+	
+}

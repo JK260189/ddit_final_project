@@ -1,0 +1,62 @@
+package kr.or.ddit.alarm.controller;
+
+import kr.or.ddit.alarm.vo.AlarmVO;
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import kr.or.ddit.alarm.service.AlarmService;
+import lombok.RequiredArgsConstructor;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Base64;
+import java.util.List;
+import java.util.Optional;
+
+@RequiredArgsConstructor
+@Controller
+@RequestMapping("/alarm")
+@Slf4j
+public class AlarmController {
+
+	private final AlarmService service;
+
+	@Value("#{appInfo['member.attatchPath']}")
+	private String uploadDir;
+
+	@GetMapping("/alarmList") //
+	@ResponseBody
+	public List<AlarmVO> AlarmList() {
+		List<AlarmVO> alarmVOS = service.alarmList();
+
+		alarmVOS.forEach(alarmVO -> {
+			Optional.ofNullable(alarmVO.getMemberImageFileRoute())
+					.filter(fileRoute -> {
+						Path path = Paths.get(fileRoute);
+						return Files.exists(path);
+					})
+					.ifPresent(fileRoute -> {
+						try {
+							String filePathName = alarmVO.getMemberImageFileRoute();
+							String fileExtName = alarmVO.getFileExtension();
+							Path path = Paths.get(fileRoute);
+							byte[] fileArray = Files.readAllBytes(path);
+							String encodedString = Base64.getEncoder().encodeToString(fileArray);
+							String changeString = "data:image/" + fileExtName + ";base64, " + encodedString;
+							log.info("changeString = {}",changeString);
+							alarmVO.setImageContents(changeString);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					});
+		});
+
+		return alarmVOS;
+
+	}
+}

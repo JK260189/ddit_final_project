@@ -1,0 +1,46 @@
+package kr.or.ddit.commons;
+
+import java.io.Serializable;
+import java.time.LocalDate;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
+
+import lombok.Data;
+
+@Data
+public class AdminIndexVO implements Serializable{
+
+	// 구독 ID 구독ID
+    private String subscribeId;
+
+    // 회원 ID 회원ID
+    private int memberId;
+    
+    // 회원이름 회원이름
+    private String memberName;
+
+    // 상품 ID 상품ID
+    private int itemId;
+
+    // 구독 시작 일자 구독시작일자
+    @DateTimeFormat(iso = ISO.DATE_TIME)// parsing 설정 String -> LocalDateTime
+   	@JsonFormat(shape = Shape.STRING)
+    private LocalDate subscribeStartDate;
+
+    // 구독 종료 일자 구독종료일자
+    @DateTimeFormat(iso = ISO.DATE_TIME)// parsing 설정 String -> LocalDateTime
+   	@JsonFormat(shape = Shape.STRING)
+    private LocalDate subscribeEndDate;
+
+    // 구독 회사 ID
+    private int companyId;
+    
+    // 구독 회사 이름
+    private String companyName;
+
+    
+}

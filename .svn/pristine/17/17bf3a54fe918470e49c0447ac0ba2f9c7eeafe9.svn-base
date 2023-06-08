@@ -1,0 +1,22 @@
+package kr.or.ddit.dashboard.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import kr.or.ddit.dashboard.vo.DashboardVO;
+
+@Mapper
+public interface DashboardDAO {
+	
+	
+	public List<DashboardVO> dashboardList();
+	
+	public DashboardVO dashboardSelect(int dashboardId);
+	
+	public int insertrDashboard(DashboardVO  dashboard);
+	
+	public int updateDashboard(DashboardVO  dashboard);
+	
+	public int deleteDashboard(int dashboardId);
+}

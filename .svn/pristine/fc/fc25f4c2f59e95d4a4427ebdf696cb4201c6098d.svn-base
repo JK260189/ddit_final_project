@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.projectAttend.dao.GitDAO">
+
+	<select id="gitList" resultType="kr.or.ddit.projectAttend.vo.GitVO" parameterType="kr.or.ddit.projectAttend.vo.GitVO">
+		SELECT *
+		FROM GIT
+		WHERE PROJECT_ID = #{projectId}
+		ORDER BY COMMIT_DATE
+	</select>
+</mapper>

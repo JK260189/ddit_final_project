@@ -1,0 +1,97 @@
+package kr.or.ddit.statistics.controller;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+
+import org.apache.commons.collections.map.HashedMap;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.statistics.service.StatisticsService;
+import kr.or.ddit.statistics.vo.StatisticsVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/company/{companyId}/statistics")
+public class StatisticsController {
+
+	@Autowired
+	private StatisticsService service;
+	
+	// 통계 정보를 위하여 모든 정보를 모델에 추가
+	@GetMapping
+	public String statistic(@PathVariable int companyId,
+							Model model,
+							Authentication user) {
+		model.addAttribute("companyId", companyId);
+		model.addAttribute("projectWholeCount", service.selectProjectCount(companyId));
+		model.addAttribute("projectStatusIncomplete", service.selectProjectStatusIncomplete(companyId));
+		model.addAttribute("projectStatusComplete", service.selectProjectStatusComplete(companyId));
+		model.addAttribute("projectWorkPriorityCount", service.selectProjectWorkPriorityCount(companyId));
+		model.addAttribute("projectWorkPriorityEmergency", service.selectProjectWorkPriorityEmergency(companyId));
+		model.addAttribute("projectWorkPriorityHigh", service.selectProjectWorkPriorityHigh(companyId));
+		model.addAttribute("projectWorkPriorityNormal", service.selectProjectWorkPriorityNormal(companyId));
+		model.addAttribute("projectWorkPriorityLow", service.selectProjectWorkPriorityLow(companyId));
+		model.addAttribute("projectWorkStatusCount", service.selectProjectWorkStatusCount(companyId));
+		model.addAttribute("projectWorkStatusRequest", service.selectProjectWorkStatusRequest(companyId));
+		model.addAttribute("projectWorkStatusProceed", service.selectProjectWorkStatusProceed(companyId));
+		model.addAttribute("projectWorkStatusFeedback", service.selectProjectWorkStatusFeedback(companyId));
+		model.addAttribute("projectWorkStatusPostpone", service.selectProjectWorkStatusPostpone(companyId));
+		model.addAttribute("projectWorkStatusComplete", service.selectProjectWorkStatusComplete(companyId));
+		model.addAttribute("projectWorkIssueStatusCount", service.selectProjectIssueStatusCount(companyId));
+		model.addAttribute("projectWorkIssueStatusEmergency", service.selectProjectIssueStatusEmergency(companyId));
+		model.addAttribute("projectWorkIssueStatusNormal", service.selectProjectIssueStatusNormal(companyId));
+		model.addAttribute("projectWorkIssueStatusLow", service.selectProjectIssueStatusLow(companyId));
+	
+		
+		
+		List<StatisticsVO> projectList = service.selectProjectIdByCompany(companyId);
+		List<List<StatisticsVO>> statList = new ArrayList<>();
+
+//		for (int i = 0; i < list.size(); i++) {
+//		    log.info("projectIdList: {}", list.get(i));
+//		    List<StatisticsVO> testList = service.selectProjectIssueContentByProject(list.get(i), companyId);
+//		    statList.add(testList);
+//		}
+
+		log.info("projectList: {}", projectList);
+		model.addAttribute("projectList", projectList);
+		
+		
+		
+		log.info("projectWholeCount : {}", service.selectProjectCount(companyId));
+		return "statistics/Statistics";
+	}
+	
+	@GetMapping("/getProjectIssues")
+	@ResponseBody
+	public List<StatisticsVO> getProjectIssues(@RequestParam("projectId") int projectId) {
+	    List<StatisticsVO> projectIssues = service.selectProjectIssueContentByProject(projectId);
+	    return projectIssues;
+	}
+	
+	@GetMapping("/getProjectIssueCategory")
+	@ResponseBody
+	public Map<String, Object> getProjectIssueCategory(@RequestParam("projectId") int projectId) {
+		Map<String, Object> map = new HashMap<String, Object>();
+				
+		map.put("에러", service.selectProjectIssueCategoryError(projectId));
+		map.put("수정", service.selectProjectIssueCategoryModify(projectId));
+		map.put("이벤트", service.selectProjectIssueCategoryEvent(projectId));
+		return map;
+		
+	}
+}

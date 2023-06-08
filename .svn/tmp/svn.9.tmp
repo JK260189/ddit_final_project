@@ -1,0 +1,366 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+   pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="security" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<security:authentication property="principal" var="principal"/>
+
+<c:set var="companyId" value="${principal.realUser.companyId}" />
+<c:choose>
+   <c:when test="${empty companyId }">
+      <script>
+          const companyId1 = undefined;
+          console.log("companyId1 =",companyId1)
+       </script>
+   </c:when>
+   <c:otherwise>
+      <script>
+         const companyId1 = ${companyId};
+         console.log("companyId1 =",companyId1)
+      </script>
+   </c:otherwise>
+</c:choose>
+
+<!-- Body: Header -->
+<div class="container-xxl">
+
+    <!-- header rightbar icon -->
+    <div class="h-right d-flex align-items-center mr-5 mr-lg-0 order-1">
+        <div class="d-flex">
+
+			<security:authorize access="T(kr.or.ddit.commons.auth.AutorityUtils).inCompany(authentication, request)">
+
+            <!-- 채팅 -->
+            <a class="nav-link collapsed" href="/ourmine/company/${companyId}/chat/chat" title="Chat">
+                <i class="icofont-chat fs-5"></i>
+            </a>
+
+            <!-- 조직도 --><!-- text-primary : 글자색 -->
+            <button type="button" class="nav-link collapsed orgchartBtn" title="Organization chart">
+                <i class="icofont-company fs-5"></i>
+            </button>
+
+			</security:authorize>
+        </div>
+
+        <!-- 알림(종) 아이콘 -->
+        <div class="dropdown notifications zindex-popover">
+            <a class="nav-link dropdown-toggle pulse" href="#" role="button" data-bs-toggle="dropdown">
+                <i class="icofont-alarm fs-5"></i>
+                <span class="pulse-ring"></span>
+            </a>
+            <div id="NotificationsDiv" class="dropdown-menu rounded-lg shadow border-0 dropdown-animation dropdown-menu-sm-end p-0 m-0">
+                <div class="card border-0 w380">
+                    <div class="card-header border-0 p-3">
+                        <h5 class="mb-0 font-weight-light d-flex justify-content-between">
+                            <span>알림</span>
+                            <span class="badge text-white">11</span>
+                        </h5>
+                    </div>
+
+                    <!-- 알림 내용 -->
+                    <div class="tab-content card-body">
+                        <div class="tab-pane fade show active">
+                            <ul class="list-unstyled list mb-0">
+                                <li class="py-2 mb-1 border-bottom alarmList">
+
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                    <a class="card-footer text-center border-top-0" href="#"> View all notifications</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 프로필 -->
+        <!-- Manager -->
+        <security:authorize access="hasRole('MANAGER')">
+        <security:authentication property="principal" var="authMember"/>
+        <div class="dropdown user-profile ml-2 ml-sm-3 d-flex align-items-center zindex-popover">
+            <div class="u-info me-2">
+                <p class="mb-0 text-end line-height-sm "><span class="font-weight-bold"><security:authentication property="principal.realUser.memberName"/></span></p>
+<%--             <security:authentication property="principal.authorities"/> --%>
+               <small style="color: orange;"><security:authentication property="principal.realUser.companyName"/>,
+                                <security:authentication property="principal.realUser.memberGrade"/></small>
+            </div>
+            <a class="nav-link dropdown-toggle pulse p-0 memberImage" href="#" role="button" data-bs-toggle="dropdown" data-bs-display="static">
+
+            </a>
+
+            <div class="dropdown-menu rounded-lg shadow border-0 dropdown-animation dropdown-menu-end p-0 m-0">
+                <div class="card border-0 w280">
+                    <div class="card-body pb-0">
+                        <div class="d-flex py-1">
+                        <span class="memberImage2"></span>
+                            <%-- <img class="avatar rounded-circle" src="${cPath}/resources/mytask/documentation/assets/images/profile_av.png" alt="profile"> --%>
+                            <div class="flex-fill ms-3">
+                                <p class="mb-0"><span class="font-weight-bold"><security:authentication property="principal.realUser.memberName"/></span></p>
+                                <small class="">${authMember.username}</small>
+                            </div>
+                        </div>
+
+                        <div><hr class="dropdown-divider border-dark"></div>
+                    </div>
+                    <div class="list-group m-2 ">
+                        <a href="/ourmine/project/projectList" class="list-group-item list-group-item-action border-0 "><i class="icofont-home fs-6 me-3"></i>프로젝트</a>
+                        <a href="/ourmine/member/memberList" class="list-group-item list-group-item-action border-0 "><i class="icofont-tasks fs-5 me-3"></i>직원관리</a>
+                        <a href="/ourmine/member/memberView" class="list-group-item list-group-item-action border-0 "><i class="icofont-user-female fs-5 me-3"></i>MyPage</a>
+                        <a href="" class="list-group-item list-group-item-action border-0 "><i class="icofont-users-alt-5 fs-5 me-3"></i>회사 인원 추가하기</a>
+                  <form id="logoutForm" action="${cPath}/logout" method="post">
+                        <security:csrfInput/>
+                        </form>
+                        <a href="javascript:$('#logoutForm').submit();" class="list-group-item list-group-item-action border-0 "><i class="icofont-logout fs-6 me-3"></i>로그아웃</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </security:authorize>
+
+        <!-- Member -->
+        <security:authorize access="hasRole('MEMBER')">
+<%--         <security:authorize access="isAuthenticated()"> --%>
+        <security:authentication property="principal" var="authMember"/>
+        <div class="dropdown user-profile ml-2 ml-sm-3 d-flex align-items-center zindex-popover">
+            <div class="u-info me-2">
+                <p class="mb-0 text-end line-height-sm "><span class="font-weight-bold"><security:authentication property="principal.realUser.memberName"/></span></p>
+<%--             <security:authentication property="principal.authorities"/> --%>
+               <small style="color: orange;"><security:authentication property="principal.realUser.companyName"/>,
+                                <security:authentication property="principal.realUser.memberGrade"/></small>
+            </div>
+            <a class="nav-link dropdown-toggle pulse p-0 memberImage" href="#" role="button" data-bs-toggle="dropdown" data-bs-display="static">
+
+            </a>
+
+            <div class="dropdown-menu rounded-lg shadow border-0 dropdown-animation dropdown-menu-end p-0 m-0">
+                <div class="card border-0 w280">
+                    <div class="card-body pb-0">
+                        <div class="d-flex py-1">
+                            <span class="memberImage2"></span>
+                           <%-- <img class="avatar rounded-circle" src="${cPath}/resources/mytask/documentation/assets/images/profile_av.png" alt="profile">--%>
+                            <div class="flex-fill ms-3">
+                                <p class="mb-0"><span class="font-weight-bold"><security:authentication property="principal.realUser.memberName"/></span></p>
+                                <small class="">${authMember.username}</small>
+                            </div>
+                        </div>
+
+                        <div><hr class="dropdown-divider border-dark"></div>
+                    </div>
+                    <div class="list-group m-2 ">
+                        <a href="projects.html" class="list-group-item list-group-item-action border-0 "><i class="icofont-home fs-6 me-3"></i>프로젝트</a>
+                        <a href="/task.html" class="list-group-item list-group-item-action border-0 "><i class="icofont-tasks fs-5 me-3"></i>작업</a>
+                        <a href="/ourmine/member/memberView" class="list-group-item list-group-item-action border-0 "><i class="icofont-tasks fs-5 me-3"></i>MyPage</a>
+                        <a href="/ourmine/company/companyListJoin" class="list-group-item list-group-item-action border-0 "><i class="bi bi-person-plus">  </i>회사 가입하기</a>
+                        <form id="logoutForm" action="${cPath}/logout" method="post">
+                        <security:csrfInput/>
+                        </form>
+                        <a href="javascript:$('#logoutForm').submit();" class="list-group-item list-group-item-action border-0 "><i class="icofont-logout fs-6 me-3"></i>로그아웃</a>
+<!--                         <a href="ui-elements/auth-signin.html" class="list-group-item list-group-item-action border-0 "><i class="icofont-logout fs-6 me-3"></i>로그아웃</a> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        </security:authorize>
+        <!-- 프로필 끝 -->
+
+</div>
+  <!-- 조직도 트리 형태 -->
+    <div id="simple-tree-sidebar" class="sidebar px-4 py-4 py-md-5 me-0">
+
+
+    </div>
+
+    <!-- menu toggler -->
+    <button class="navbar-toggler p-0 border-0 menu-toggle order-3" type="button" data-bs-toggle="collapse" data-bs-target="#mainHeader">
+        <span class="fa fa-bars"></span>
+    </button>
+
+    <!-- 메인 검색창 -->
+    <div class="order-0 col-lg-4 col-md-4 col-sm-12 col-12 mb-3 mb-md-0 ">
+        <div class="input-group flex-nowrap input-group-lg">
+<!--             <button type="button" class="input-group-text" id="addon-wrapping"><i class="fa fa-search"></i></button> -->
+            <input type="hidden" class="form-control" placeholder="Search" aria-label="search" aria-describedby="addon-wrapping">
+<!--             <button type="button" class="input-group-text add-member-top" id="addon-wrappingone" data-bs-toggle="modal" data-bs-target="#addUser"><i class="fa fa-plus"></i></button> -->
+        </div>
+    </div>
+
+   <!-- 구독 정보 -->
+   <security:authorize access="hasRole('MANAGER')">
+   <div class="logo-text" style="text-align: center;">
+    <security:authentication property="principal.realUser.memberName"/>
+    (남은 구독 일자 :
+    <security:authentication property="principal.realUser.subscribeDate"/>
+    일)
+
+    구독 중 <a class="ms-link active" href="/ourmine/subscribe/itemList.do"><span> / 결제하기</span></a>
+    </div>
+    </security:authorize>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.8/jstree.min.js"></script>
+    <script type="text/javascript">
+		headers['Content-Type'] = 'application/json'
+		headers['accept'] = 'application/json'
+		let orgchartBtn = document.querySelector('.orgchartBtn');
+		const sidebar = document.getElementById("simple-tree-sidebar");
+		let memberImage = document.querySelector('.memberImage');
+		let memberImage2 = document.querySelector('.memberImage2');
+
+		async function memberImageList(){
+		await axios.get('/ourmine/member/memberViewJson',{headers:headers})
+				.then(resp => {
+					let data = resp.data;
+					console.log('data = ',data)
+					memberImage.innerHTML = '';
+					memberImage2.innerHTML = '';
+					let array = []
+					array.push(data);
+					array.map(item => {
+						if(item.imageContents === null){
+							console.log('이미지없음')
+                            memberImage.innerHTML +=  `<img class="avatar lg rounded-circle img-thumbnail" src="${cPath}/resources/mytask/documentation/assets/images/profile_av.png" alt="profile">`
+							memberImage2.innerHTML += `<img class="avatar lg rounded-circle img-thumbnail" src="${cPath}/resources/mytask/documentation/assets/images/profile_av.png" alt="profile">`
+						}else{
+							console.log('이미지있음')
+							memberImage.innerHTML +=  `<img class="avatar lg rounded-circle img-thumbnail" src="\${item.imageContents}" alt="profile">`
+							memberImage2.innerHTML += `<img class="avatar lg rounded-circle img-thumbnail" src="\${item.imageContents}" alt="profile">`
+						}
+					})
+				})
+		}
+		memberImageList();
+
+		let alarmList = document.querySelector('.alarmList');
+
+
+async function alarmListMember(){
+	await axios.get('/ourmine/alarm/alarmList',{headers: headers})
+		.then(resp => {
+			let data = resp.data;
+			console.log("알림 리스트", data)
+			data.map(item => {
+				return   alarmList.innerHTML  += `  <a href="javascript:void(0);" class="d-flex">/
+
+                                                    <div class="flex-fill ms-2">
+                                                        <p class="d-flex justify-content-between mb-0 "><span class="font-weight-bold">\${item.alarmSender}</span> <small>\${item.alarmDate}</small></p>
+                                                        <span class="">\${item.alarmContent}<span class="badge bg-success">Review<span></span>
+                                                    </div>
+                                                </a>`
+			})
+		})
+}
+		alarmListMember();
+		headers['accept'] = 'application/json';
+		headers['Content-Type'] = 'application/json'
+
+
+		orgchartBtn.addEventListener('click', () => {
+			let simpleTreeSidebar = document.getElementById("simple-tree-sidebar");
+			if (simpleTreeSidebar.classList.contains("visible")) {
+				simpleTreeSidebar.classList.remove("visible");
+			} else {
+				axios.get(`/ourmine/company/${companyId}/orgchart/orgchartTreeJson`, { headers: headers })
+					.then(resp => {
+						let data = resp.data;
+						console.log('트리 데이터', data)
+						updateSidebar(data);
+						simpleTreeSidebar.classList.add("visible");
+					});
+			}
+		});
+
+		function createHierarchy(data, parentId) {
+			return data
+				.filter(item => item.seniorDepartmentId === parentId)
+				.map(item => ({ ...item, children: createHierarchy(data, item.orgchartId) }));
+		}
+
+		function createAndAppendHtml(item, parentElement) {
+			let folderElement = document.createElement("div");
+			folderElement.className = "folder";
+
+			let folderToggleElement = document.createElement("div");
+			folderToggleElement.className = "folder-toggle";
+			folderToggleElement.textContent = `부서 이름: \${item.departmentName}`;
+			folderToggleElement.addEventListener('click', () => {
+				let detailsElement = folderElement.querySelector(".folder-details");
+				if(detailsElement.style.display === "none") {
+					detailsElement.style.display = "block";
+				} else {
+					detailsElement.style.display = "none";
+				}
+			});
+
+			let detailsElement = document.createElement("div");
+			detailsElement.className = "folder-details";
+			detailsElement.style.display = "none"; // 초기에는 감춰져 있습니다.
+
+			let departmentCreateDateElement = document.createElement("p");
+			departmentCreateDateElement.textContent = `부서 생성 날짜: \${item.departmentCreateDate}`;
+
+			let memberIdElement = document.createElement("p");
+			memberIdElement.textContent = `회원 ID: \${item.memberId === null ? 'None' : item.memberId}`;
+
+			let orgchartIdElement = document.createElement("p");
+			orgchartIdElement.textContent = `조직도 ID: \${item.orgchartId}`;
+
+			detailsElement.appendChild(departmentCreateDateElement);
+			detailsElement.appendChild(memberIdElement);
+			detailsElement.appendChild(orgchartIdElement);
+
+			folderElement.appendChild(folderToggleElement);
+			folderElement.appendChild(detailsElement);
+
+			parentElement.appendChild(folderElement);
+
+			// 하위 부서에 대해 같은 과정을 재귀적으로 반복합니다.
+			item.children.forEach(childItem => createAndAppendHtml(childItem, detailsElement));
+		}
+
+		function updateSidebar(data) {
+			let simpleTreeSidebar = document.getElementById("simple-tree-sidebar");
+
+			while (simpleTreeSidebar.firstChild) {
+				simpleTreeSidebar.removeChild(simpleTreeSidebar.firstChild);
+			}
+
+			let hierarchy = createHierarchy(data, null);
+			hierarchy.forEach(item => createAndAppendHtml(item, simpleTreeSidebar));
+		}
+
+
+
+
+
+/*
+		// 웹소켓 서버에 연결
+		let socket = new WebSocket('ws://localhost/ourmine/aws/echo');
+
+		// 연결이 열리면 서버에 메시지를 보낼 수 있습니다.
+		socket.onopen = function(event) {
+			//socket.send(JSON.stringify({"userId":"블랙핑크", "message":"Hello!"}));
+		};
+
+		// 서버로부터 메시지를 받으면 이 함수가 호출됩니다.
+		socket.onmessage = function(e) {
+			console.log('Server message: ', e.data);
+			// JSON 형태의 데이터라면 파싱해서 사용할 수 있습니다.
+			let receivedData = JSON.parse(e.data);
+			let userId = receivedData.userId;
+			let message = receivedData.message;
+			let time = receivedData.time;
+			console.log('Parsed data - senderId: ', senderId, ', alaramContent: ', alaramContent, ', alarmDate: ', alarmDate);
+		};
+		// 연결이 닫히거나 에러가 발생하면 이 함수가 호출됩니다.
+		socket.onerror = function(error) {
+			console.log('WebSocket Error: ', error);
+		};
+
+		socket.onclose = function(event) {
+			console.log('WebSocket connection closed: ', event.code);
+		};*/
+    </script>
+
+
+

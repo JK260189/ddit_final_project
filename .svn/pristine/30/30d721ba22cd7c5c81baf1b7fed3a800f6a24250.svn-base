@@ -1,0 +1,17 @@
+package kr.or.ddit.chatting.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import kr.or.ddit.chatting.vo.ChatVO;
+import kr.or.ddit.member.vo.MemberVO;
+
+@Mapper
+public interface ChattingDAO {
+	public List<MemberVO> selectChatCoMemList(int companyId);
+	
+	public List<ChatVO> selectChatList(int chattingId);
+	
+	public String selectLastContent(int chattingId);
+}

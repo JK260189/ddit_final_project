@@ -1,0 +1,58 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>>
+
+<script src = "https://cdn.jsdelivr.net/npm/chart.js"></script>
+<c:set var="projectWholeCount" value="${projectWholeCount }"/>
+<c:set var="projectStartDate" value="${projectStartDate }"/>
+<c:set var="projectEndDate" value="${projectEndDate }"/>
+<c:set var="projectStatusIncomplete" value="${projectStatusIncomplete }"/>
+<c:set var="projectStatusComplete" value="${projectStatusComplete }"/>
+<c:set var="projectWorkPriorityCount" value="${projectWorkPriorityCount }"/>
+<c:set var="projectWorkPriorityEmergency" value="${projectWorkPriorityEmergency }"/>
+<c:set var="projectWorkPriorityHigh" value="${projectWorkPriorityHigh }"/>
+<c:set var="projectWorkPriorityNormal" value="${projectWorkPriorityNormal }"/>
+<c:set var="projectWorkPriorityLow" value="${projectWorkPriorityLow }"/>
+<c:set var="projectWorkStatusCount" value="${projectWorkStatusCount }"/>
+<c:set var="projectWorkStatusRequest" value="${projectWorkStatusRequest }"/>
+<c:set var="projectWorkStatusProceed" value="${projectWorkStatusProceed }"/>
+<c:set var="projectWorkStatusFeedback" value="${projectWorkStatusFeedback }"/>
+<c:set var="projectWorkStatusPostpone" value="${projectWorkStatusPostpone }"/>
+<c:set var="projectWorkStatusComplete" value="${projectWorkStatusComplete }"/>
+<c:set var="projectWorkIssueStatusCount" value="${projectWorkIssueStatusCount }"/>
+<c:set var="projectWorkIssueStatusEmergency" value="${projectWorkIssueStatusEmergency }"/>
+<c:set var="projectWorkIssueStatusNormal" value="${projectWorkIssueStatusNormal }"/>
+<c:set var="projectWorkIssueStatusLow" value="${projectWorkIssueStatusLow }"/>
+<c:set var="projectWorkIssueCategoryError" value="${projectWorkIssueCategoryError }"/>
+<c:set var="projectWorkIssueCategoryModify" value="${projectWorkIssueCategoryModify }"/>
+<c:set var="projectWorkIssueCategoryEvent" value="${projectWorkIssueCategoryEvent }"/>
+
+<div>
+	<canvas id= "projectWorkByPriority"></canvas>
+</div>
+
+<sciprt>
+
+
+	const workChart = document.getElementById('projectWorkByPriority');
+	
+	var options1 = {
+	  chart: {
+	    height: 280,
+	    type: "radialBar",
+	  },
+	  series: [67, 84, 97, 61],
+	  plotOptions: {
+	    radialBar: {
+	      dataLabels: {
+	        total: {
+	          show: true,
+	          label: 'TOTAL'
+	        }
+	      }
+	    }
+	  },
+	  labels: ['TEAM A', 'TEAM B', 'TEAM C', 'TEAM D']
+	};
+</sciprt>
+

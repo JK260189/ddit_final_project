@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.codeWall.dao.CodeWallDAO">
+
+<select id="selectCodeWallList" resultType="kr.or.ddit.codeWall.vo.CodeWallVO" parameterType="hashmap">
+	SELECT CODEWALL_ID
+			, CODE_EDITOR_ID
+			, MEMBER_ID
+			, PROJECT_ID
+			, COMPANY_ID
+			, CODEWALL_WRITE_DATE
+			, CODE_CONTENT
+			, CODE_TITLE
+	  FROM CODEWALL
+	 WHERE COMPANY_ID = #{companyId}
+	   AND PROJECT_ID = #{projectId} 
+
+</select>
+
+<select id="selectCodeWallArticle" resultType="kr.or.ddit.codeWall.vo.CodeWallVO" parameterType="int">
+	SELECT CODEWALL_ID
+			, CODE_EDITOR_ID
+			, MEMBER_ID
+			, PROJECT_ID
+			, COMPANY_ID
+			, CODEWALL_WRITE_DATE
+			, CODE_CONTENT
+	  FROM CODEWALL
+	 WHERE CODEWALL_ID = #{codewallId}
+</select>
+
+<insert id="insertCodeWall" parameterType="kr.or.ddit.codeWall.vo.CodeWallVO">
+	INSERT INTO CODEWALL(
+				CODEWALL_ID
+				, CODE_EDITOR_ID
+				, MEMBER_ID
+				, PROJECT_ID
+				, COMPANY_ID
+				, CODEWALL_WRITE_DATE
+				, CODE_CONTENT)
+		  VALUES(
+		  	CODEWALL_SEQ.NEXTVAL
+			, #{codeEditorId , jdbcType=NUMERIC}
+			, #{memberId , jdbcType=NUMERIC}
+			, #{projectId , jdbcType=NUMERIC}
+			, #{companyId , jdbcType=NUMERIC}
+			, SYSDATE
+			, #{codeContent , jdbcType=VARCHAR}
+			  )	
+	
+</insert>
+
+
+</mapper>
