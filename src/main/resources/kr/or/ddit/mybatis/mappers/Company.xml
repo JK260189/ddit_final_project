@@ -10,8 +10,8 @@ FROM COMPANY C
          JOIN MEMBER M ON A.MEMBER_ID = M.MEMBER_ID
          JOIN MEMBER_GRADE MG ON M.MEMBER_GRADE_ID = MG.MEMBER_GRADE_ID
          JOIN SUBSCRIBE S ON M.MEMBER_ID = S.MEMBER_ID
-WHERE MG.MEMBER_GRADE_ID = 2 AND S.SUBSCRIBE_USE = 'Y' 
-	
+WHERE MG.MEMBER_GRADE_ID = 2 AND S.SUBSCRIBE_USE = 'Y'
+
 	</select>
 
 	<select id="companyDuplicationSelect" resultType="int">
@@ -79,29 +79,30 @@ WHERE MG.MEMBER_GRADE_ID = 2 AND S.SUBSCRIBE_USE = 'Y'
 			FROM WAITING_LIST WL JOIN MEMBER M on WL.MEMBER_ID = M.MEMBER_ID
 		                     JOIN REQUEST_STATUS RS on WL.REQUEST_STATUS_ID = RS.REQUEST_STATUS_ID
 		                     JOIN COMPANY C ON WL.COMPANY_ID = C.COMPANY_ID
-			WHERE C.COMPANY_ID =#{companyId} 
+			WHERE C.COMPANY_ID =#{companyId}
 			<if test="requestStatusId > 0">
 				AND RS.REQUEST_STATUS_ID = #{requestStatusId}
 			</if>
+			ORDER BY REQUEST_STATUS DESC
 			) a
 	) WHERE rnum BETWEEN (#{currentPage} - 1) * #{pageSize} + 1 AND #{currentPage} * #{pageSize}
 	</select>
-	
+
 	<select id="requstStatusOption" resultType="kr.or.ddit.company.vo.CompanyVO">
 		SELECT *
 		FROM REQUEST_STATUS
 	</select>
-	
+
 	<select id="requstStatusCount" resultType="int" parameterType="kr.or.ddit.company.vo.CompanyVO">
 		SELECT COUNT(*)
 		FROM WAITING_LIST
-		WHERE COMPANY_ID = #{companyId} 
+		WHERE COMPANY_ID = #{companyId}
 		<if test="requestStatusId > 0">
 			AND REQUEST_STATUS_ID = #{requestStatusId}
 		</if>
-		
+
 	</select>
-	
-	
+
+
 
 </mapper>

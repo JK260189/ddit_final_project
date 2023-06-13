@@ -23,9 +23,10 @@ WHERE PROJECT_ID = #{projectId}
                   	<if test="search != null" > 
 						    	and PI.ISSUE_TITLE like '%' || #{search} || '%' 
 						    </if> 
-                        ORDER BY PI.PROJECT_STATUS_ID 
+                        ORDER BY PROJECT_ISSUE_ID desc
                     ) a
                WHERE ROWNUM <![CDATA[<]]>= #{currentPage} * #{pageSize}
+                order by PROJECT_ISSUE_ID desc
            )
       WHERE rnum <![CDATA[>]]> (#{currentPage} - 1) * #{pageSize}
 

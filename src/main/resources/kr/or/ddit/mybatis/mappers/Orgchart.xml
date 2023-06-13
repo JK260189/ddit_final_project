@@ -93,6 +93,7 @@ FROM (
 			              LEFT JOIN COMPANY C2 on A2.COMPANY_ID = C2.COMPANY_ID
 			              LEFT JOIN ORGCHART O on A2.ORGCHART_ID = O.ORGCHART_ID
 			WHERE (A2.COMPANY_ID = #{companyId} AND (O.ORGCHART_ID != #{orgchartId} OR O.ORGCHART_ID IS NULL))
+			ORDER BY CASE WHEN O.ORGCHART_ID IS NULL THEN 0 ELSE 1 END, O.ORGCHART_ID
 		) a
 	) WHERE rnum BETWEEN (#{currentPage} - 1) * #{pageSize} + 1 AND #{currentPage} * #{pageSize}
 

@@ -4,10 +4,12 @@
 	
 
 	<select id="selectChatCoMemList" resultType="kr.or.ddit.member.vo.MemberVO">
-		SELECT DISTINCT M.MEMBER_NAME,DEPARTMENT_NAME,M.MEMBER_EMAIL, M.MEMBER_Id
+		SELECT DISTINCT M.MEMBER_NAME,DEPARTMENT_NAME,M.MEMBER_EMAIL, M.MEMBER_ID,
+				M.MEMBER_IMAGE_FILE_ROUTE,
+		    	M.FILE_EXTENSION
 		FROM PROJECT_ATTEND PA   
-		         JOIN ASSOCIATION A on PA.MEMBER_ID = A.MEMBER_ID and PA.COMPANY_ID = A.COMPANY_ID
-		         JOIN MEMBER M on A.MEMBER_ID = M.MEMBER_ID
+		         JOIN ASSOCIATION A ON PA.MEMBER_ID = A.MEMBER_ID AND PA.COMPANY_ID = A.COMPANY_ID
+		         JOIN MEMBER M ON A.MEMBER_ID = M.MEMBER_ID
 		         JOIN ORGCHART O ON O.ORGCHART_ID = A.ORGCHART_ID
 		WHERE COMPANY_ID = #{companyId}
         ORDER BY DEPARTMENT_NAME
@@ -86,6 +88,8 @@
 		        AND C.CHATTING_WHTHER_GROUP = 'N'
 		    )
 		    AND CL.MEMBER_ID != #{memberId}
+		ORDER BY 
+			S.CHATTING_CONTENT_TIME DESC
 	</select>
 	<select id="selectGroupChatList" resultType="kr.or.ddit.chatting.vo.ChatVO" parameterType="int">
         SELECT

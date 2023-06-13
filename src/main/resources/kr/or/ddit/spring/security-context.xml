@@ -53,24 +53,23 @@
 			authentication-success-handler-ref="customeLoginSuccessHandler"
 
 		/>
-		
+
 
 		<!-- AuthorizationManger -->
-		<security:logout delete-cookies="JSESSIONID,SPRING_SECURITY_REMEMBER_ME_COOKIE" 
-				invalidate-session="true"
-				logout-url="/logout"/>
+		<security:logout logout-url="/logout"/>
 		<security:intercept-url pattern="/login" access="permitAll"/>
 		<security:intercept-url pattern="/index" access="permitAll"/>
 		<security:intercept-url pattern="/homepage" access="permitAll"/>
 		
-		<security:remember-me key="wmoskey" token-validity-seconds="2419200"/>
+		<!-- 조직도 접근제한 -->
+<!-- 			<security:intercept-url pattern="/company/{companyId}/orgchart/**" access="hasRole('MANAGER')"/>  MANGER -->
 
 		<!--  프로젝트 리스트 접근제한 -->
 		<security:intercept-url pattern="/company/{companyId}/project/projectList" access="T(kr.or.ddit.commons.auth.AutorityUtils).inCompany(authentication, request)"/>  <!-- MANGER -->
 
-		<security:intercept-url pattern="/company/{companyId}/project/projectList/projectView" access="T(kr.or.ddit.commons.auth.AutorityUtils).inCompanyRole(authentication, request, 'PM')"/>
-		<security:intercept-url pattern="/company/{companyId}/project/projectList/projectDelete" access="T(kr.or.ddit.commons.auth.AutorityUtils).inCompanyRole(authentication, request, 'PM')"/>
-		<security:intercept-url pattern="/company/{companyId}/project/projectList/projectInsertMember" access="T(kr.or.ddit.commons.auth.AutorityUtils).inCompanyRole(authentication, request, 'PM')"/>
+		<security:intercept-url pattern="/company/{companyId}/project/projectList/projectView" access="T(kr.or.ddit.commons.auth.AutorityUtils).inCompanyRole(authentication, request, 'PM') or hasRole('MANAGER')"/>
+		<security:intercept-url pattern="/company/{companyId}/project/projectList/projectDelete" access="T(kr.or.ddit.commons.auth.AutorityUtils).inCompanyRole(authentication, request, 'PM') or hasRole('MANAGER')"/>
+		<security:intercept-url pattern="/company/{companyId}/project/projectList/projectInsertMember" access="T(kr.or.ddit.commons.auth.AutorityUtils).inCompanyRole(authentication, request, 'PM') or hasRole('MANAGER')"/>
 
 		<!-- 프로젝트 일감 접근제한 -->
 		<security:intercept-url pattern="/company/{companyId}/project/{projectId}/projectWork/projectWorkForm" access="T(kr.or.ddit.commons.auth.AutorityUtils).inCompanyProjectRole(authentication, request, 'PL') or T(kr.or.ddit.commons.auth.AutorityUtils).inCompanyProjectRole(authentication, request, 'PM')"/>
